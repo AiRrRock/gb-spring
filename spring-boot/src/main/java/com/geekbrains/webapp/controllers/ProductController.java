@@ -31,6 +31,24 @@ public class ProductController {
         return "product_info";
     }
 
+    @GetMapping("/product/increment/{id}")
+    public String incrementProduct(Model model, @PathVariable Long id) {
+        Product p = productService.findById(id);
+        int price = p.getPrice();
+        p.setPrice(++price);
+        model.addAttribute("products", productService.findAll());
+        return "products";
+    }
+
+    @GetMapping("/product/decrement/{id}")
+    public String decrementProduct(Model model, @PathVariable Long id) {
+        Product p = productService.findById(id);
+        int price = p.getPrice();
+        p.setPrice(--price);
+        model.addAttribute("products", productService.findAll());
+        return "products";
+    }
+
     @GetMapping("/add")
     public String showCreateForm() {
         return "add_product";
