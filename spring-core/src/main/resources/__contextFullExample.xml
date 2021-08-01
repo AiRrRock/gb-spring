@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Что такое Spring Bean
+    In Spring, the objects that form the backbone of your application
+    and that are managed by the Spring IoC container are called beans.
+    A bean is an object that is instantiated, assembled, and otherwise
+    managed by a Spring IoC container. -->
+
+    <!-- Сканирование пакета -->
+<!--    <context:component-scan base-package="com.geekbrains.spring.examples"/>-->
+
+    <!-- Объявление обычного бина -->
+    <bean id="simpleBean" class="com.geekbrains.spring.current.SimpleBean"/>
+
+    <!-- Scopes -->
+    <bean id="simpleBean" class="com.geekbrains.spring.examples.SimpleBean" scope="prototype"/>
+    <bean id="simpleBean" class="com.geekbrains.spring.examples.SimpleBean" scope="singleton"/>
+
+    <!-- Constructor Injection -->
+    <bean id="cppCodeCreator" class="com.geekbrains.spring.examples.CppCodeCreator">
+        <constructor-arg ref="animalsClassNameGenerator"/>
+        <constructor-arg ref="anotherId2"/>
+        <constructor-arg ref="anotherId3"/>
+    </bean>
+
+    <bean id="exampleBean" class="examples.ExampleBean">
+        <constructor-arg type="int" value="7500000"/>
+        <constructor-arg type="java.lang.String" value="42"/>
+    </bean>
+
+    <bean id="exampleBean" class="examples.ExampleBean">
+        <constructor-arg index="0" value="7500000"/>
+        <constructor-arg index="1" value="42"/>
+    </bean>
+
+    <bean id="exampleBean" class="examples.ExampleBean">
+        <constructor-arg name="years" value="7500000"/>
+        <constructor-arg name="ultimateAnswer" value="42"/>
+    </bean>
+
+    <!-- Setter Injection -->
+    <bean id="javaCodeCreator" class="com.geekbrains.spring.examples.JavaCodeCreator">
+        <property name="classNameGenerator">
+            <ref bean="animalsClassNameGenerator"/>
+        </property>
+    </bean>
+
+    <!-- Map value injection -->
+    <bean id="something" class="x.y.SomeClass">
+        <property name="accounts">
+            <map>
+                <entry key="one" value="9.99"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- depends-on example -->
+    <bean id="beanOne" class="ExampleBean" depends-on="manager,accountDao">
+        <property name="manager" ref="manager"/>
+    </bean>
+
+    <bean id="manager" class="ManagerBean"/>
+    <bean id="accountDao" class="x.y.jdbc.JdbcAccountDao"/>
+
+    <!-- Lazy (for singleton) -->
+    <bean id="lazy" class="com.something.ExpensiveToCreateBean" lazy-init="true"/>
+
+    <!-- init-method & destroy-method -->
+    <!-- @PostConstruct & @PreDestroy -->
+    <bean id="exampleInitBean1" class="examples.ExampleBean1" init-method="init"/>
+    <bean id="exampleInitBean2" class="examples.ExampleBean2" destroy-method="cleanup"/>
+    <bean id="exampleInitBean3" class="examples.ExampleBean3" init-method="start" destroy-method="shutdown"/>
+</beans>
