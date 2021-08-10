@@ -1,38 +1,55 @@
 package com.geekbrains.webapp.repositories;
 
 import com.geekbrains.webapp.model.Product;
+import com.geekbrains.webapp.services.SessionService;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Component
 public class ProductRepository {
-    private List<Product> products;
-
-    @PostConstruct
-    public void init() {
-        this.products = new ArrayList<>(Arrays.asList(
-                new Product(1L, "Milk", 80),
-                new Product(2L, "Corn", 90),
-                new Product(3L, "Carp", 100),
-                new Product(4L, "Bread", 90),
-                new Product(4L, "Bread", 90)
-        ));
-    }
+    @Autowired
+    private SessionService service;
 
     public List<Product> findAll() {
-        return Collections.unmodifiableList(products);
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            List<Product> products = session.createQuery("from Product").getResultList();
+            session.getTransaction().commit();
+            return Collections.unmodifiableList(products);
+        }
     }
 
     public Product findById(Long id) {
-        return products.stream().filter(s -> s.getId().equals(id)).findFirst().get();
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Product product = session.find(Product.class, id);
+            return product;
+        }
     }
 
-    public void save(Product product) {
-        products.add(product);
+    public void saveOrUpdate(Product product) {
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            session.merge(product);
+            session.flush();
+            session.getTransaction().commit();
+        }
     }
+
+    public void deleteById(Long id) {
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Product product = session.get(Product.class, id);
+            session.delete(product);
+            session.getTransaction().commit();
+        }
+    }
+
 }
