@@ -1,10 +1,14 @@
 package com.geekbrains.webapp.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
 @Table(name = "products")
+@NamedQueries({
+        @NamedQuery(name = "productWithOrders", query = "SELECT p FROM Product p JOIN FETCH p.orders WHERE p.id = :id")
+})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +21,8 @@ public class Product {
     @Column(name = "price")
     private int price;
 
+    @OneToMany(mappedBy = "product")
+    private List<Order> orders;
 
     public Product() {
     }
@@ -40,6 +46,10 @@ public class Product {
         return price;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -52,4 +62,7 @@ public class Product {
         this.price = price;
     }
 
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }

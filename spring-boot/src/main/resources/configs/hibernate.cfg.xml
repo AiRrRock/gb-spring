@@ -32,5 +32,8 @@
 <!--        Полная очистка схемы и создание ее по разметке Hibernate. После закрытия Factory выполняется DROP -->
 
         <mapping class="com.geekbrains.webapp.model.Product"/>
+        <mapping class="com.geekbrains.webapp.model.Customer"/>
+        <mapping class="com.geekbrains.webapp.model.Order"/>
+
     </session-factory>
 </hibernate-configuration>
