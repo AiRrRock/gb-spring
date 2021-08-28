@@ -6,6 +6,7 @@ import com.geekbrains.webapp.model.Product;
 import com.geekbrains.webapp.services.CategoryService;
 import com.geekbrains.webapp.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +24,11 @@ public class ProductController {
         return new ProductDto(productService.findById(id).get());
     }
 
+
     @GetMapping("/products")
-    public List<ProductDto> findAllFiltered(@RequestParam(name = "max_price") @Nullable Integer maxPrice,
-                                            @RequestParam(name = "min_price") @Nullable Integer minPrice) {
+    public Page<ProductDto> findAll(@RequestParam(defaultValue = "1", name = "p") int pageIndex,
+                                    @RequestParam(name = "max_price") @Nullable Integer maxPrice,
+                                    @RequestParam(name = "min_price") @Nullable Integer minPrice) {
         List<ProductDto> productDtos = new ArrayList<>();
         List<Product> products;
         if (minPrice != null) {
@@ -42,8 +45,14 @@ public class ProductController {
         for (Product p : products) {
             productDtos.add(new ProductDto(p));
         }
-        return productDtos;
+
+        if (pageIndex < 1) {
+            pageIndex = 1;
+        }
+
+        return productService.findAll(pageIndex - 1, 10).map(ProductDto::new);
     }
+
 
     @PostMapping("/products")
     public ProductDto add(@RequestBody ProductDto productDto) {
