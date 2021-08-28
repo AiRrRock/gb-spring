@@ -36,6 +36,7 @@ public class ProductController {
         Product p = productDAO.findById(id);
         int price = p.getPrice();
         p.setPrice(++price);
+        productDAO.saveOrUpdate(p);
         model.addAttribute("products", productDAO.findAll());
         return "products";
     }
@@ -45,6 +46,7 @@ public class ProductController {
         Product p = productDAO.findById(id);
         int price = p.getPrice();
         p.setPrice(--price);
+        productDAO.saveOrUpdate(p);
         model.addAttribute("products", productDAO.findAll());
         return "products";
     }

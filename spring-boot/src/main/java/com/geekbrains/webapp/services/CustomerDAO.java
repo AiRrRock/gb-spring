@@ -1,41 +1,76 @@
 package com.geekbrains.webapp.services;
 
 import com.geekbrains.webapp.model.Customer;
+import com.geekbrains.webapp.model.Order;
 import com.geekbrains.webapp.model.Product;
-import com.geekbrains.webapp.repositories.CustomerRepository;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
-
 public class CustomerDAO {
-    private CustomerRepository customerRepository;
+    private SessionService service;
 
     @Autowired
-    public CustomerDAO(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CustomerDAO(SessionService service) {
+        this.service = service;
     }
 
+
     public List<Customer> findAll() {
-        return customerRepository.findAll();
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            List<Customer> customers = session.createQuery("from Customer").getResultList();
+            session.getTransaction().commit();
+            return Collections.unmodifiableList(customers);
+        }
     }
 
     public Customer findById(Long id) {
-        return customerRepository.findById(id);
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Customer customer = session.find(Customer.class, id);
+            customer.setOrders(Collections.emptyList());
+            return customer;
+        }
     }
 
     public Customer findByIdWithOrders(Long id) {
-        return customerRepository.findByIdWithOrders(id);
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Customer customer = session
+                    .createNamedQuery("withOrders", Customer.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            for (Order o : customer.getOrders()) {
+                o.getProduct();
+            }
+            return customer;
+        } catch (NoResultException e) {
+            return findById(id);
+        }
     }
 
     public void saveOrUpdate(Customer customer) {
-        customerRepository.saveOrUpdate(customer);
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            session.merge(customer);
+            session.flush();
+            session.getTransaction().commit();
+        }
     }
 
     public void deleteById(Long id) {
-        customerRepository.deleteById(id);
+        try (Session session = service.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Product product = session.get(Product.class, id);
+            session.delete(product);
+            session.getTransaction().commit();
+        }
     }
 
 }

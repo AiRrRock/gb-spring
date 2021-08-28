@@ -19,3 +19,5 @@ INSERT INTO orders (id, customer_id, product_id, price) VALUES (1,1,2,12);
 INSERT INTO orders (id, customer_id, product_id, price) VALUES (2,1,2,13);
 INSERT INTO orders (id, customer_id, product_id, price) VALUES (3,1,2,15);
 INSERT INTO orders (id, customer_id, product_id, price) VALUES (4,2,2,12);
+INSERT INTO orders (id, customer_id, product_id, price) VALUES (5,1,3,12);
+INSERT INTO orders (id, customer_id, product_id, price) VALUES (6,1,4,12);
