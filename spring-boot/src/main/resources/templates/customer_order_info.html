@@ -2,35 +2,38 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Products</title>
+    <title>Customer Orders</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
-    <h2>Product info</h2>
-    <h3 th:text="${'ID: ' + product.id}"></h3>
-    <h3 th:text="${'Name: ' + product.name}"></h3>
-    <h3 th:text="${'Price: ' + product.price}"></h3>
+    <h2>Customer products</h2>
+    <h3 th:text="${'ID: ' + customer.id}"></h3>
+    <h3 th:text="${'Name: ' + customer.name}"></h3>
+
     <table class="table">
         <thead>
         <tr>
             <td>id</td>
             <td>name</td>
+            <td>price</td>
+            <td>Buying price</td>
             <td></td>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="o : ${product.orders}">
-            <td th:text="${o.customer.id}"></td>
-            <td th:text="${o.customer.name}"></td>
+        <tr th:each="o : ${customer.orders}">
+            <td th:text="${o.id}"></td>
+            <td th:text="${o.product.name}"></td>
+            <td th:text="${o.product.price}"></td>
+            <td th:text="${o.price}"></td>
         </tr>
         </tbody>
     </table>
-
-    <a th:href="@{'/products'}" class="btn btn-primary">Products</a>
-
+    <a th:href="@{'/customers'}" class="btn btn-primary">Back to customers</a>
+    <a th:href="@{'/'}" class="btn btn-primary">Main</a>
 </div>
 </body>
 </html>

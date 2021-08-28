@@ -24,9 +24,14 @@ public class ProductDAO {
         return productRepository.findById(id);
     }
 
+    public Product findByIdWithOrders(Long id) {
+        return productRepository.findByIdWithOrders(id);
+    }
+
     public void saveOrUpdate(Product product) {
         productRepository.saveOrUpdate(product);
     }
+
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }

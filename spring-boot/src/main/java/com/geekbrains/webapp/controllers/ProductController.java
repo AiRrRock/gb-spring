@@ -27,7 +27,7 @@ public class ProductController {
 
     @GetMapping("/product/{id}")
     public String showProduct(Model model, @PathVariable Long id) {
-        model.addAttribute("product", productDAO.findById(id));
+        model.addAttribute("product", productDAO.findByIdWithOrders(id));
         return "product_info";
     }
 

@@ -1,5 +1,6 @@
 package com.geekbrains.webapp.repositories;
 
+import com.geekbrains.webapp.model.Customer;
 import com.geekbrains.webapp.model.Order;
 import com.geekbrains.webapp.model.Product;
 import com.geekbrains.webapp.services.SessionService;
@@ -7,53 +8,56 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;
 import java.util.Collections;
 import java.util.List;
 
 @Component
-public class ProductRepository {
+
+public class CustomerRepository {
     @Autowired
     private SessionService service;
 
-    public List<Product> findAll() {
+    public List<Customer> findAll() {
         try (Session session = service.getFactory().getCurrentSession()) {
             session.beginTransaction();
-            List<Product> products = session.createQuery("from Product").getResultList();
+            List<Customer> customers = session.createQuery("from Customer").getResultList();
             session.getTransaction().commit();
-            return Collections.unmodifiableList(products);
+            return Collections.unmodifiableList(customers);
         }
     }
 
-    public Product findById(Long id) {
+    public Customer findById(Long id) {
         try (Session session = service.getFactory().getCurrentSession()) {
             session.beginTransaction();
-            Product product = session.find(Product.class, id);
-            product.setOrders(Collections.emptyList());
-            return product;
+            Customer customer = session.find(Customer.class, id);
+            customer.setOrders(Collections.emptyList());
+            return customer;
         }
     }
 
-    public Product findByIdWithOrders(Long id) {
+    public Customer findByIdWithOrders(Long id) {
         try (Session session = service.getFactory().getCurrentSession()) {
             session.beginTransaction();
-            Product product = session
-                    .createNamedQuery("productWithOrders", Product.class)
+            Customer customer = session
+                    .createNamedQuery("withOrders", Customer.class)
                     .setParameter("id", id)
                     .getSingleResult();
-            for(Order o : product.getOrders()){
-                o.getCustomer();
+            for(Order o : customer.getOrders()){
+                o.getProduct();
             }
-            return product;
+            return customer;
         } catch (NoResultException e) {
             return findById(id);
         }
     }
 
-    public void saveOrUpdate(Product product) {
+    public void saveOrUpdate(Customer customer) {
         try (Session session = service.getFactory().getCurrentSession()) {
             session.beginTransaction();
-            session.merge(product);
+            session.merge(customer);
             session.flush();
             session.getTransaction().commit();
         }
