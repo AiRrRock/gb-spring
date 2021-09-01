@@ -1,6 +1,7 @@
 angular.module('market-front').controller('storeController', function ($scope, $http, $location) {
     const contextPath = 'http://localhost:8189/market/';
     let currentPageIndex = 1;
+    let cartId = 1;
 
     $scope.loadProducts = function (pageIndex = 1) {
         currentPageIndex = pageIndex;
@@ -27,6 +28,19 @@ angular.module('market-front').controller('storeController', function ($scope, $
 
     $scope.navToEditProductPage = function (productId) {
         $location.path('/edit_product/' + productId);
+    }
+
+    $scope.addToCart = function (productId){
+        $http({
+           url: contextPath + 'api/v1/carts/add',
+           method: 'GET',
+           params: {
+              cId: cartId,
+              pId: productId
+           }
+        }).then(function (response) {
+           $scope.loadProducts(currentPageIndex)
+        });
     }
 
     $scope.loadProducts();

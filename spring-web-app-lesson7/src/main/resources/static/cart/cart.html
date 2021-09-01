@@ -1,0 +1,30 @@
+<div>
+    <p></p>
+    <h3>Товареы в корзин</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Название</td>
+            <td>Цена</td>
+            <td>Количество</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="i in cart">
+            <td>{{i.id}}</td>
+            <td>{{i.title}}</td>
+            <td>{{i.price}}</td>
+            <td>
+                <button class="btn" ng-click="decrement(i.id)">-</button>{{i.amount}}<button class="btn" ng-click="increment(i.id)">+</button>
+            </td>
+            <td>
+                <button class="btn " ng-click="delete(i.id)">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p></p>
+
+</div>
